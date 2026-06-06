@@ -57,6 +57,21 @@ public class AdminMovieFormViewModel
     public IFormFile? PosterFile { get; set; }
 }
 
+public class SiteContentViewModel
+{
+    [Display(Name = "Tytuł serwisu")]
+    [StringLength(100)]
+    public string SiteTitle { get; set; } = string.Empty;
+
+    [Display(Name = "Opis w sekcji hero (strona główna)")]
+    [StringLength(2000)]
+    public string HeroDescription { get; set; } = string.Empty;
+
+    [Display(Name = "Tekst stopki")]
+    [StringLength(2000)]
+    public string FooterText { get; set; } = string.Empty;
+}
+
 public class AdminUserItem
 {
     public string Id { get; set; } = string.Empty;

@@ -1,0 +1,45 @@
+@model SiteContentViewModel
+@{
+    ViewData["Title"] = "Treść strony";
+}
+
+<header class="my-3">
+    <h1 class="h3"><i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i>Edycja treści strony</h1>
+    <p class="text-muted">Zmiany są zapisywane w bazie (SiteSettings) i używane w layoutach przez ViewBag.</p>
+</header>
+
+<section class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form asp-action="Index" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+            <div class="mb-3">
+                <label asp-for="SiteTitle" class="form-label fw-semibold"></label>
+                <input asp-for="SiteTitle" class="form-control" />
+                <span asp-validation-for="SiteTitle" class="text-danger small"></span>
+                <div class="form-text">Wyświetlany w nagłówku oraz tytule strony.</div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="HeroDescription" class="form-label fw-semibold"></label>
+                <textarea asp-for="HeroDescription" rows="3" class="form-control"></textarea>
+                <span asp-validation-for="HeroDescription" class="text-danger small"></span>
+                <div class="form-text">Główny tekst w banerze na stronie głównej.</div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FooterText" class="form-label fw-semibold"></label>
+                <textarea asp-for="FooterText" rows="2" class="form-control"></textarea>
+                <span asp-validation-for="FooterText" class="text-danger small"></span>
+                <div class="form-text">Tekst wyświetlany w stopce serwisu.</div>
+            </div>
+
+            <button type="submit" class="btn btn-success"><i class="fa-solid fa-floppy-disk me-1" aria-hidden="true"></i>Zapisz zmiany</button>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
