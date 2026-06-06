@@ -1,0 +1,73 @@
+@model List<FilmReviewApp.Models.ViewModels.AdminUserItem>
+@{
+    ViewData["Title"] = "Użytkownicy";
+}
+
+<header class="my-3">
+    <h1 class="h3"><i class="fa-solid fa-users me-2" aria-hidden="true"></i>Użytkownicy</h1>
+</header>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle bg-white">
+        <thead class="table-light">
+            <tr>
+                <th scope="col">E-mail</th>
+                <th scope="col">Rejestracja</th>
+                <th scope="col">Recenzje</th>
+                <th scope="col">Rola</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="text-end">Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>
+                        <span class="avatar me-2" style="width:32px;height:32px;font-size:.8rem;" aria-hidden="true">@FilmReviewApp.Controllers.MoviesController.GetInitials(u.Email)</span>
+                        @u.Email
+                    </td>
+                    <td class="small">@u.CreatedAt.ToString("d MMM yyyy")</td>
+                    <td>@u.ReviewCount</td>
+                    <td>
+                        @if (u.IsAdmin)
+                        {
+                            <span class="badge bg-danger">Admin</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">User</span>
+                        }
+                    </td>
+                    <td>
+                        @if (u.IsLockedOut)
+                        {
+                            <span class="badge bg-dark">Zablokowany</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Aktywny</span>
+                        }
+                    </td>
+                    <td class="text-end text-nowrap">
+                        <form asp-action="ToggleRole" asp-route-id="@u.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm btn-outline-primary" title="Zmień rolę" aria-label="Zmień rolę użytkownika @u.Email">
+                                <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+                                @(u.IsAdmin ? "Odbierz admina" : "Nadaj admina")
+                            </button>
+                        </form>
+                        <form asp-action="ToggleLock" asp-route-id="@u.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-sm @(u.IsLockedOut ? "btn-outline-success" : "btn-outline-dark")"
+                                    title="@(u.IsLockedOut ? "Odblokuj" : "Zablokuj")" aria-label="@(u.IsLockedOut ? "Odblokuj" : "Zablokuj") konto @u.Email">
+                                <i class="fa-solid @(u.IsLockedOut ? "fa-lock-open" : "fa-lock")" aria-hidden="true"></i>
+                                @(u.IsLockedOut ? "Odblokuj" : "Zablokuj")
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
