@@ -194,3 +194,94 @@ body {
 .admin-content {
     padding-top: 1.5rem;
 }
+
+/* =====================================================================
+   RWD — własne media queries dla breakpointów xs i sm
+   Karty filmów: 4 kolumny (desktop) → 2 (tablet) → 1 (mobile)
+   Bootstrap odpowiada za grid; poniżej dodatkowe korekty dla małych ekranów.
+   ===================================================================== */
+
+/* sm i mniejsze (tablet w pionie / duży telefon, < 768px) */
+@media (max-width: 767.98px) {
+    .site-main {
+        padding-top: 60px;
+    }
+
+    .hero-content {
+        padding: 2.5rem 0;
+    }
+
+    .hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .stat-number {
+        font-size: 1.75rem;
+    }
+
+    /* Pasek wyszukiwania w nawigacji na całą szerokość po rozwinięciu menu */
+    #navSearchForm {
+        width: 100%;
+        margin-bottom: .5rem;
+    }
+
+    /* Sidebar admina staje się poziomym panelem nad treścią */
+    .admin-sidebar {
+        min-height: auto;
+    }
+
+    .admin-content {
+        padding-top: .5rem;
+    }
+
+    .poster-detail {
+        max-width: 220px;
+        display: block;
+        margin: 0 auto 1rem;
+    }
+}
+
+/* xs (telefon, < 576px) */
+@media (max-width: 575.98px) {
+    html {
+        font-size: 13px;
+    }
+
+    .hero h1 {
+        font-size: 1.35rem;
+    }
+
+    .avatar-lg {
+        width: 72px;
+        height: 72px;
+        font-size: 1.6rem;
+    }
+
+    /* Karty filmów: jedna kolumna, plakat nie zajmuje całej wysokości ekranu */
+    .movie-poster,
+    .poster-placeholder {
+        aspect-ratio: 16 / 10;
+    }
+
+    /* Tabele admina przewijane w poziomie zamiast łamania układu */
+    .table-responsive {
+        font-size: .85rem;
+    }
+
+    /* Przyciski akcji w tabelach jeden pod drugim */
+    .text-end form.d-inline {
+        display: block !important;
+        margin-top: .25rem;
+    }
+
+    .btn-group {
+        flex-wrap: wrap;
+    }
+}
+
+/* Korekta gridu kart na bardzo dużych ekranach (xxl) */
+@media (min-width: 1400px) {
+    .hero-content {
+        padding: 5rem 0;
+    }
+}
