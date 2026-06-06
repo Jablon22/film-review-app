@@ -33,7 +33,13 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddHttpClient<ITmdbService, TmdbService>();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ISiteSettingsService, SiteSettingsService>();
+builder.Services.AddScoped<SiteSettingsFilter>();
+
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.AddService<SiteSettingsFilter>();
+});
 
 var app = builder.Build();
 

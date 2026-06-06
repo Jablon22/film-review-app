@@ -1,0 +1,24 @@
+@model double
+@{
+    // Rating is on a 1-10 scale; render as 5 stars (each star = 2 points).
+    var outOfFive = Model / 2.0;
+    var full = (int)Math.Floor(outOfFive);
+    var hasHalf = (outOfFive - full) >= 0.25 && (outOfFive - full) < 0.75;
+    if ((outOfFive - full) >= 0.75) { full += 1; }
+    var empty = 5 - full - (hasHalf ? 1 : 0);
+}
+<span class="stars" title="@Model.ToString("0.0")/10" aria-label="Ocena @Model.ToString("0.0") na 10">
+    @for (var i = 0; i < full; i++)
+    {
+        <i class="fa-solid fa-star" aria-hidden="true"></i>
+    }
+    @if (hasHalf)
+    {
+        <i class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+    }
+    @for (var i = 0; i < empty; i++)
+    {
+        <i class="fa-regular fa-star empty" aria-hidden="true"></i>
+    }
+    <span class="ms-1 text-muted small">@Model.ToString("0.0")</span>
+</span>

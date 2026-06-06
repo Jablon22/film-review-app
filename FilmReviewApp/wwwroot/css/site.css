@@ -1,22 +1,196 @@
+:root {
+    --fr-dark: #14161a;
+    --fr-dark-soft: #1f232b;
+    --fr-accent: #ffc107;
+    --fr-accent-hover: #e0a800;
+    --fr-text-muted: #9aa3af;
+}
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    font-family: "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f5f7;
+}
+
+.site-main {
+    flex: 1 0 auto;
+    padding-top: 70px;
+}
+
+.site-footer {
+    flex-shrink: 0;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+    position: relative;
+    color: #fff;
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 0 1rem 1rem;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.55) 60%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 4rem 0;
+}
+
+/* ---------- Movie cards ---------- */
+.movie-card {
+    border: none;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    background-color: #fff;
+    height: 100%;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.15);
+}
+
+.movie-poster {
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    width: 100%;
+    background-color: #2a2f38;
+}
+
+.poster-placeholder {
+    aspect-ratio: 2 / 3;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #2a2f38, #434a57);
+    color: var(--fr-text-muted);
+    font-size: 2.5rem;
+}
+
+.poster-detail {
+    max-width: 100%;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- Stars ---------- */
+.stars {
+    color: var(--fr-accent);
+    letter-spacing: 1px;
+}
+
+.stars .fa-star,
+.stars .fa-star-half-stroke {
+    color: var(--fr-accent);
+}
+
+.stars .empty {
+    color: #d2d6dc;
+}
+
+/* ---------- Avatars ---------- */
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--fr-accent);
+    color: #1a1a1a;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.avatar-lg {
+    width: 90px;
+    height: 90px;
+    font-size: 2rem;
+}
+
+/* ---------- Stat cards ---------- */
+.stat-card {
+    border-radius: 0.75rem;
+    border: none;
+    color: #fff;
+}
+
+.stat-number {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* ---------- AJAX search dropdown ---------- */
+#navSearchResults:empty {
+    display: none;
+}
+
+#navSearchResults .list-group-item {
+    cursor: pointer;
+}
+
+/* ---------- Spinner overlay ---------- */
+.ajax-spinner {
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 0.2em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: fr-spin 0.7s linear infinite;
+}
+
+@keyframes fr-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- Admin layout ---------- */
+.admin-sidebar {
+    background-color: var(--fr-dark);
+    color: #cbd3e0;
+    min-height: 100vh;
+}
+
+.admin-sidebar .nav-link {
+    color: #cbd3e0;
+    border-radius: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.admin-sidebar .nav-link:hover,
+.admin-sidebar .nav-link.active {
+    background-color: var(--fr-dark-soft);
+    color: var(--fr-accent);
+}
+
+.admin-content {
+    padding-top: 1.5rem;
 }
