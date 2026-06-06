@@ -1,0 +1,74 @@
+@model List<FilmReviewApp.Models.Movie>
+@{
+    ViewData["Title"] = "Zarządzanie filmami";
+    var search = ViewData["Search"] as string;
+}
+
+<header class="my-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <h1 class="h3 mb-0"><i class="fa-solid fa-film me-2" aria-hidden="true"></i>Filmy</h1>
+    <a asp-action="Create" class="btn btn-success"><i class="fa-solid fa-plus me-1" aria-hidden="true"></i>Dodaj film</a>
+</header>
+
+<form asp-action="Index" method="get" class="mb-3">
+    <div class="input-group" style="max-width:420px;">
+        <input type="search" name="search" value="@search" class="form-control" placeholder="Szukaj po tytule..." aria-label="Szukaj filmu" />
+        <button class="btn btn-outline-secondary" type="submit"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
+    </div>
+</form>
+
+@if (Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle bg-white">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Plakat</th>
+                    <th scope="col">Tytuł</th>
+                    <th scope="col">Rok</th>
+                    <th scope="col">Gatunki</th>
+                    <th scope="col">Ocena</th>
+                    <th scope="col">TMDB</th>
+                    <th scope="col" class="text-end">Akcje</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var movie in Model)
+                {
+                    <tr>
+                        <td>
+                            @if (!string.IsNullOrEmpty(movie.PosterUrl))
+                            {
+                                <img src="@movie.PosterUrl" alt="Plakat @movie.Title" width="40" height="60" style="object-fit:cover;border-radius:4px;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted"><i class="fa-solid fa-film" aria-hidden="true"></i></span>
+                            }
+                        </td>
+                        <td>@movie.Title</td>
+                        <td>@movie.Year</td>
+                        <td class="small">@movie.Genres</td>
+                        <td>@(movie.AverageRating > 0 ? movie.AverageRating.ToString("0.0") : "—")</td>
+                        <td>@(movie.TmdbId.HasValue ? movie.TmdbId.ToString() : "—")</td>
+                        <td class="text-end text-nowrap">
+                            <a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-sm btn-outline-primary" aria-label="Edytuj @movie.Title">
+                                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                            </a>
+                            <form asp-action="Delete" asp-route-id="@movie.Id" method="post" class="d-inline confirm-delete-form"
+                                  data-confirm-message="Usunąć film „@movie.Title” wraz z recenzjami?">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger" aria-label="Usuń @movie.Title">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-light border">Brak filmów. Dodaj pierwszy film lub zaimportuj go z TMDB.</div>
+}

@@ -1,0 +1,95 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<header class="my-3">
+    <h1 class="h3"><i class="fa-solid fa-gauge-high me-2" aria-hidden="true"></i>Dashboard</h1>
+    <p class="text-muted">Przegląd serwisu FilmReview.</p>
+</header>
+
+<section class="row g-3 mb-4" aria-label="Statystyki">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card bg-primary p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">@Model.MovieCount</div>
+                    <div>Filmy</div>
+                </div>
+                <i class="fa-solid fa-film fa-2x opacity-50" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card bg-warning text-dark p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">@Model.PendingReviewCount</div>
+                    <div>Recenzje oczekujące</div>
+                </div>
+                <i class="fa-solid fa-hourglass-half fa-2x opacity-50" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card bg-success p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">@Model.UserCount</div>
+                    <div>Użytkownicy</div>
+                </div>
+                <i class="fa-solid fa-users fa-2x opacity-50" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-card bg-secondary p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">@Model.WatchlistCount</div>
+                    <div>Pozycje watchlist</div>
+                </div>
+                <i class="fa-solid fa-list-check fa-2x opacity-50" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section aria-label="Recenzje oczekujące na moderację">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 class="h5 mb-0">Ostatnie recenzje do moderacji</h2>
+        <a asp-area="Admin" asp-controller="ReviewsAdmin" asp-action="Index" class="btn btn-sm btn-outline-dark">Wszystkie</a>
+    </div>
+    @if (Model.RecentPending.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle bg-white">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Film</th>
+                        <th scope="col">Użytkownik</th>
+                        <th scope="col">Ocena</th>
+                        <th scope="col">Treść</th>
+                        <th scope="col">Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.RecentPending)
+                    {
+                        <tr>
+                            <td><a asp-area="" asp-controller="Movies" asp-action="Details" asp-route-id="@r.MovieId">@r.MovieTitle</a></td>
+                            <td>@r.UserName</td>
+                            <td><span class="badge bg-warning text-dark">@r.Rating/10</span></td>
+                            <td class="text-truncate" style="max-width:260px;">@r.Content</td>
+                            <td class="text-nowrap small">@r.CreatedAt.ToString("d MMM yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-light border">Brak recenzji oczekujących na moderację.</div>
+    }
+</section>

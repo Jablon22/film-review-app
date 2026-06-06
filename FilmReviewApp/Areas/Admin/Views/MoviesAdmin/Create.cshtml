@@ -1,0 +1,41 @@
+@model AdminMovieFormViewModel
+@{
+    ViewData["Title"] = "Dodaj film";
+}
+
+<header class="my-3">
+    <h1 class="h3"><i class="fa-solid fa-plus me-2" aria-hidden="true"></i>Dodaj film</h1>
+</header>
+
+<section class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="h5"><i class="fa-brands fa-themeco me-1" aria-hidden="true"></i>Import z TMDB</h2>
+        <p class="text-muted small">Wyszukaj film w bazie TMDB i zaimportuj jego dane oraz plakat jednym kliknięciem.</p>
+        <form id="tmdbImportForm" onsubmit="return false;">
+            @Html.AntiForgeryToken()
+            <div class="input-group mb-3" style="max-width:520px;">
+                <input id="tmdbQuery" type="text" class="form-control" placeholder="np. Incepcja" aria-label="Tytuł filmu do wyszukania w TMDB" />
+                <button id="tmdbSearchBtn" type="button" class="btn btn-primary">
+                    <i class="fa-solid fa-magnifying-glass me-1" aria-hidden="true"></i>Szukaj w TMDB
+                </button>
+            </div>
+        </form>
+        <div id="tmdbResults"></div>
+    </div>
+</section>
+
+<section class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h2 class="h5">Dodaj ręcznie</h2>
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <partial name="_MovieForm" model="Model" />
+            <button type="submit" class="btn btn-success mt-3"><i class="fa-solid fa-floppy-disk me-1" aria-hidden="true"></i>Zapisz film</button>
+            <a asp-action="Index" class="btn btn-outline-secondary mt-3">Anuluj</a>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,41 @@
+@model AdminMovieFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+<div class="row g-3">
+    <div class="col-md-8">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger small"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Year" class="form-label"></label>
+        <input asp-for="Year" type="number" class="form-control" />
+        <span asp-validation-for="Year" class="text-danger small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Director" class="form-label"></label>
+        <input asp-for="Director" class="form-control" />
+        <span asp-validation-for="Director" class="text-danger small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Genres" class="form-label"></label>
+        <input asp-for="Genres" class="form-control" placeholder="np. Akcja,Thriller" />
+        <span asp-validation-for="Genres" class="text-danger small"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" rows="4" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger small"></span>
+    </div>
+    <div class="col-md-7">
+        <label asp-for="PosterUrl" class="form-label"></label>
+        <input asp-for="PosterUrl" class="form-control" placeholder="https://..." />
+        <span asp-validation-for="PosterUrl" class="text-danger small"></span>
+    </div>
+    <div class="col-md-5">
+        <label asp-for="PosterFile" class="form-label"></label>
+        <input asp-for="PosterFile" type="file" accept=".jpg,.jpeg,.png,.webp" class="form-control" />
+        <span asp-validation-for="PosterFile" class="text-danger small"></span>
+    </div>
+</div>

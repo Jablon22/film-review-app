@@ -1,0 +1,112 @@
+@{
+    var siteTitle = ViewData["SiteTitle"] as string ?? "FilmReview";
+    var active = ViewData["ActiveMenu"] as string ?? "";
+    string IsActive(string key) => active == key ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Panel admina</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-lg-2 d-lg-block admin-sidebar p-3" aria-label="Menu administracyjne">
+                <a class="navbar-brand text-white d-flex align-items-center mb-4 text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fa-solid fa-film text-warning me-2" aria-hidden="true"></i>
+                    <span class="fw-bold">@siteTitle</span>
+                </a>
+                <button class="btn btn-outline-light btn-sm d-lg-none mb-3 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#adminMenu" aria-expanded="false" aria-controls="adminMenu">
+                    <i class="fa-solid fa-bars me-1" aria-hidden="true"></i>Menu
+                </button>
+                <div class="collapse d-lg-block" id="adminMenu">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link @IsActive("dashboard")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                <i class="fa-solid fa-gauge-high me-2" aria-hidden="true"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @IsActive("movies")" asp-area="Admin" asp-controller="MoviesAdmin" asp-action="Index">
+                                <i class="fa-solid fa-film me-2" aria-hidden="true"></i>Filmy
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @IsActive("reviews")" asp-area="Admin" asp-controller="ReviewsAdmin" asp-action="Index">
+                                <i class="fa-solid fa-comments me-2" aria-hidden="true"></i>Recenzje
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @IsActive("users")" asp-area="Admin" asp-controller="UsersAdmin" asp-action="Index">
+                                <i class="fa-solid fa-users me-2" aria-hidden="true"></i>Użytkownicy
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @IsActive("content")" asp-area="Admin" asp-controller="Content" asp-action="Index">
+                                <i class="fa-solid fa-pen-to-square me-2" aria-hidden="true"></i>Treść strony
+                            </a>
+                        </li>
+                        <li><hr class="text-secondary" /></li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fa-solid fa-arrow-left me-2" aria-hidden="true"></i>Powrót do serwisu
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="nav-link border-0 bg-transparent text-start w-100">
+                                    <i class="fa-solid fa-right-from-bracket me-2" aria-hidden="true"></i>Wyloguj
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-lg-10 admin-content px-4">
+                @if (TempData["Success"] is string success)
+                {
+                    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                        <i class="fa-solid fa-circle-check me-1" aria-hidden="true"></i>@success
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+                    </div>
+                }
+                @if (TempData["Error"] is string error)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                        <i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>@error
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+                    </div>
+                }
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="confirmDeleteLabel">Potwierdź usunięcie</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                </div>
+                <div class="modal-body" id="confirmDeleteBody">Czy na pewno chcesz usunąć ten element?</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Usuń</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
