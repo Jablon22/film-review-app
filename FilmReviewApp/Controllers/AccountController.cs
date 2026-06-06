@@ -4,6 +4,7 @@ using FilmReviewApp.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FilmReviewApp.Controllers;
 
@@ -11,13 +12,16 @@ public class AccountController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly ApplicationDbContext _context;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager)
+        SignInManager<ApplicationUser> signInManager,
+        ApplicationDbContext context)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _context = context;
     }
 
     [HttpGet]
@@ -112,6 +116,49 @@ public class AccountController : Controller
         await _signInManager.SignOutAsync();
         TempData["Success"] = "Wylogowano pomyślnie.";
         return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Profile()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user is null)
+        {
+            return Challenge();
+        }
+
+        var reviewCount = await _context.Reviews.CountAsync(r => r.UserId == user.Id);
+        var watchlistCount = await _context.WatchlistItems.CountAsync(w => w.UserId == user.Id);
+
+        var recent = await _context.Reviews
+            .Include(r => r.Movie)
+            .Where(r => r.UserId == user.Id)
+            .OrderByDescending(r => r.CreatedAt)
+            .Take(5)
+            .Select(r => new ProfileReviewItem
+            {
+                ReviewId = r.Id,
+                MovieId = r.MovieId,
+                MovieTitle = r.Movie!.Title,
+                Rating = r.Rating,
+                Content = r.Content,
+                CreatedAt = r.CreatedAt,
+                IsApproved = r.IsApproved
+            })
+            .ToListAsync();
+
+        var model = new ProfileViewModel
+        {
+            Email = user.Email ?? "",
+            Initials = MoviesController.GetInitials(user.Email),
+            CreatedAt = user.CreatedAt,
+            ReviewCount = reviewCount,
+            WatchlistCount = watchlistCount,
+            RecentReviews = recent
+        };
+
+        return View(model);
     }
 
     [HttpGet]

@@ -1,0 +1,86 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "Mój profil";
+}
+
+<section class="container my-4">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <span class="avatar avatar-lg mx-auto mb-3" aria-hidden="true">@Model.Initials</span>
+                    <h1 class="h5 mb-1">@Model.Email</h1>
+                    <p class="text-muted small mb-3">
+                        <i class="fa-solid fa-calendar-day me-1" aria-hidden="true"></i>
+                        Dołączył(a): @Model.CreatedAt.ToString("d MMMM yyyy")
+                    </p>
+                    <div class="row text-center">
+                        <div class="col-6 border-end">
+                            <div class="h4 mb-0">@Model.ReviewCount</div>
+                            <small class="text-muted">Recenzji</small>
+                        </div>
+                        <div class="col-6">
+                            <div class="h4 mb-0">@Model.WatchlistCount</div>
+                            <small class="text-muted">Na watchliście</small>
+                        </div>
+                    </div>
+                    <a asp-controller="Watchlist" asp-action="Index" class="btn btn-outline-warning w-100 mt-3">
+                        <i class="fa-solid fa-list-check me-1" aria-hidden="true"></i>Moja watchlista
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <h2 class="h5 mb-3"><i class="fa-solid fa-clock-rotate-left me-2" aria-hidden="true"></i>Moje ostatnie recenzje</h2>
+            @if (Model.RecentReviews.Any())
+            {
+                <div class="vstack gap-3">
+                    @foreach (var r in Model.RecentReviews)
+                    {
+                        <article class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                    <h3 class="h6 mb-0">
+                                        <a asp-controller="Movies" asp-action="Details" asp-route-id="@r.MovieId">@r.MovieTitle</a>
+                                    </h3>
+                                    <div>
+                                        <span class="badge bg-warning text-dark"><i class="fa-solid fa-star me-1" aria-hidden="true"></i>@r.Rating/10</span>
+                                        @if (r.IsApproved)
+                                        {
+                                            <span class="badge bg-success">Zatwierdzona</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Oczekuje</span>
+                                        }
+                                    </div>
+                                </div>
+                                <p class="text-muted small mb-2">@r.CreatedAt.ToString("d MMM yyyy")</p>
+                                <p class="mb-2">@r.Content</p>
+                                <div class="d-flex gap-2">
+                                    <a asp-controller="Reviews" asp-action="Edit" asp-route-id="@r.ReviewId" class="btn btn-sm btn-outline-secondary">
+                                        <i class="fa-solid fa-pen" aria-hidden="true"></i> Edytuj
+                                    </a>
+                                    <form asp-controller="Reviews" asp-action="Delete" method="post" class="confirm-delete-form d-inline"
+                                          data-confirm-message="Czy na pewno usunąć tę recenzję?">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@r.ReviewId" />
+                                        <input type="hidden" name="returnUrl" value="@Url.Action("Profile", "Account")" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fa-solid fa-trash" aria-hidden="true"></i> Usuń
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-light border">Nie dodałeś jeszcze żadnej recenzji. <a asp-controller="Movies" asp-action="Index">Przeglądaj filmy</a>.</div>
+            }
+        </div>
+    </div>
+</section>
