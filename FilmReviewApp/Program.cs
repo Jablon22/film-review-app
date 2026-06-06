@@ -34,6 +34,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddHttpClient<ITmdbService, TmdbService>();
 
 builder.Services.AddScoped<ISiteSettingsService, SiteSettingsService>();
+builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddScoped<SiteSettingsFilter>();
 
 builder.Services.AddControllersWithViews(options =>

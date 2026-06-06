@@ -1,0 +1,161 @@
+@model MovieDetailViewModel
+@{
+    ViewData["Title"] = Model.Movie.Title;
+    var movie = Model.Movie;
+}
+
+<article class="container my-4">
+    <div class="row g-4">
+        <div class="col-md-4 col-lg-3">
+            @if (!string.IsNullOrEmpty(movie.PosterUrl))
+            {
+                <img src="@movie.PosterUrl" class="poster-detail w-100" alt="Plakat filmu @movie.Title" />
+            }
+            else
+            {
+                <div class="poster-placeholder rounded" aria-hidden="true"><i class="fa-solid fa-film"></i></div>
+            }
+
+            @if (Model.CanReview)
+            {
+                <form asp-controller="Watchlist" asp-action="Add" method="post" class="mt-3 d-grid">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="movieId" value="@movie.Id" />
+                    <button type="submit" class="btn @(Model.InWatchlist ? "btn-success" : "btn-outline-warning")"
+                            @(Model.InWatchlist ? "disabled" : "")>
+                        <i class="fa-solid @(Model.InWatchlist ? "fa-check" : "fa-plus")" aria-hidden="true"></i>
+                        @(Model.InWatchlist ? "W watchliście" : "Dodaj do watchlisty")
+                    </button>
+                </form>
+            }
+        </div>
+
+        <div class="col-md-8 col-lg-9">
+            <header>
+                <h1 class="h2 mb-1">@movie.Title <span class="text-muted fs-4">(@movie.Year)</span></h1>
+                @if (!string.IsNullOrEmpty(movie.Director))
+                {
+                    <p class="text-muted mb-2"><i class="fa-solid fa-user-tie me-1" aria-hidden="true"></i>Reżyseria: @movie.Director</p>
+                }
+                <div class="mb-2">
+                    @foreach (var g in movie.GenreList)
+                    {
+                        <span class="badge bg-secondary me-1">@g</span>
+                    }
+                </div>
+                <div class="mb-3">
+                    @if (movie.AverageRating > 0)
+                    {
+                        <partial name="_StarRating" model="movie.AverageRating" />
+                        <span class="text-muted ms-2 small">(@Model.ReviewCount @(Model.ReviewCount == 1 ? "recenzja" : "recenzji"))</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Brak ocen — bądź pierwszy!</span>
+                    }
+                </div>
+            </header>
+
+            @if (!string.IsNullOrEmpty(movie.Description))
+            {
+                <section aria-label="Opis filmu">
+                    <h2 class="h5">Opis</h2>
+                    <p>@movie.Description</p>
+                </section>
+            }
+
+            <hr />
+
+            <section aria-label="Recenzje">
+                <h2 class="h5 mb-3"><i class="fa-solid fa-comments me-2" aria-hidden="true"></i>Recenzje (@Model.ReviewCount)</h2>
+
+                @if (!(User.Identity?.IsAuthenticated ?? false))
+                {
+                    <div class="alert alert-light border">
+                        <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Url.Action("Details", "Movies", new { id = movie.Id })">Zaloguj się</a>, aby dodać recenzję.
+                    </div>
+                }
+                else if (Model.AlreadyReviewed)
+                {
+                    <div class="alert alert-info">Dodałeś już recenzję do tego filmu. Możesz ją edytować w sekcji poniżej lub w swoim profilu.</div>
+                }
+                else
+                {
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <h3 class="h6">Dodaj swoją recenzję</h3>
+                            <form asp-controller="Reviews" asp-action="Create" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" asp-for="NewReview.MovieId" />
+                                <div class="row g-3">
+                                    <div class="col-sm-3">
+                                        <label asp-for="NewReview.Rating" class="form-label"></label>
+                                        <input asp-for="NewReview.Rating" type="number" min="1" max="10" class="form-control" />
+                                        <span asp-validation-for="NewReview.Rating" class="text-danger small"></span>
+                                    </div>
+                                    <div class="col-sm-9">
+                                        <label asp-for="NewReview.Content" class="form-label"></label>
+                                        <textarea asp-for="NewReview.Content" rows="3" class="form-control" placeholder="Napisz, co sądzisz o tym filmie..."></textarea>
+                                        <span asp-validation-for="NewReview.Content" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-warning mt-3">
+                                    <i class="fa-solid fa-paper-plane me-1" aria-hidden="true"></i>Wyślij recenzję
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+                @if (Model.Reviews.Any())
+                {
+                    <div class="vstack gap-3">
+                        @foreach (var review in Model.Reviews)
+                        {
+                            <article class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <span class="avatar" aria-hidden="true">@review.Initials</span>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                                <strong>@review.UserName</strong>
+                                                <span class="badge bg-warning text-dark"><i class="fa-solid fa-star me-1" aria-hidden="true"></i>@review.Rating/10</span>
+                                            </div>
+                                            <p class="text-muted small mb-2">@review.CreatedAt.ToString("d MMMM yyyy")</p>
+                                            <p class="mb-1">@review.Content</p>
+                                            @if (review.IsOwn)
+                                            {
+                                                <div class="mt-2 d-flex gap-2">
+                                                    <a asp-controller="Reviews" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-sm btn-outline-secondary">
+                                                        <i class="fa-solid fa-pen" aria-hidden="true"></i> Edytuj
+                                                    </a>
+                                                    <form asp-controller="Reviews" asp-action="Delete" method="post" class="confirm-delete-form d-inline"
+                                                          data-confirm-message="Czy na pewno usunąć swoją recenzję?">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="id" value="@review.Id" />
+                                                        <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Movies", new { id = movie.Id })" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="fa-solid fa-trash" aria-hidden="true"></i> Usuń
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Brak zatwierdzonych recenzji. Bądź pierwszy!</p>
+                }
+            </section>
+        </div>
+    </div>
+</article>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

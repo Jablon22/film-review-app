@@ -75,6 +75,66 @@ public class MoviesController : Controller
         return View(model);
     }
 
+    public async Task<IActionResult> Details(int id)
+    {
+        var movie = await _context.Movies
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (movie is null)
+        {
+            return NotFound();
+        }
+
+        var reviews = await _context.Reviews
+            .AsNoTracking()
+            .Include(r => r.User)
+            .Where(r => r.MovieId == id && r.IsApproved)
+            .OrderByDescending(r => r.CreatedAt)
+            .ToListAsync();
+
+        var currentUserId = _userManager.GetUserId(User);
+
+        var model = new MovieDetailViewModel
+        {
+            Movie = movie,
+            ReviewCount = reviews.Count,
+            Reviews = reviews.Select(r => new ReviewDisplayItem
+            {
+                Id = r.Id,
+                UserName = r.User?.Email ?? "Użytkownik",
+                Initials = GetInitials(r.User?.Email),
+                Rating = r.Rating,
+                Content = r.Content,
+                CreatedAt = r.CreatedAt,
+                IsOwn = r.UserId == currentUserId
+            }).ToList(),
+            CanReview = User.Identity?.IsAuthenticated ?? false,
+            NewReview = new NewReviewViewModel { MovieId = id }
+        };
+
+        if (model.CanReview)
+        {
+            model.AlreadyReviewed = await _context.Reviews
+                .AnyAsync(r => r.MovieId == id && r.UserId == currentUserId);
+            model.InWatchlist = await _context.WatchlistItems
+                .AnyAsync(w => w.MovieId == id && w.UserId == currentUserId);
+        }
+
+        return View(model);
+    }
+
+    public static string GetInitials(string? email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return "??";
+        }
+        var namePart = email.Split('@')[0];
+        var letters = namePart.Where(char.IsLetter).Take(2).ToArray();
+        return letters.Length > 0 ? new string(letters).ToUpperInvariant() : "??";
+    }
+
     [HttpGet]
     public async Task<IActionResult> Search(string? q)
     {
