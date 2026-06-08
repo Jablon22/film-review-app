@@ -1,4 +1,4 @@
-# 🎬 Film Review App
+# Film Review App
 
 Aplikacja webowa do katalogowania, oceniania i recenzowania filmów, zbudowana w **ASP.NET Core 8 MVC**.
 Umożliwia przeglądanie katalogu filmów, dodawanie recenzji, prowadzenie własnej watchlisty oraz
@@ -6,7 +6,7 @@ import filmów z bazy **TMDB**. Posiada rozbudowany panel administracyjny z mode
 
 ---
 
-## ✨ Funkcje
+## Funkcje
 
 ### Część publiczna
 - **Strona główna** – baner z losowym „filmem dnia”, sekcje „Najwyżej oceniane” i „Ostatnio dodane”, statystyki serwisu.
@@ -28,7 +28,7 @@ import filmów z bazy **TMDB**. Posiada rozbudowany panel administracyjny z mode
 
 ---
 
-## 🧰 Stos technologiczny
+## Stos technologiczny
 
 | Warstwa | Technologia |
 |---|---|
@@ -41,7 +41,7 @@ import filmów z bazy **TMDB**. Posiada rozbudowany panel administracyjny z mode
 
 ---
 
-## 📁 Struktura projektu
+## Struktura projektu
 
 ```
 FilmReviewApp/
@@ -61,7 +61,7 @@ FilmReviewApp/
 
 ---
 
-## 🚀 Uruchomienie krok po kroku
+## Uruchomienie krok po kroku
 
 ### Wymagania wstępne
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
@@ -92,7 +92,7 @@ Aplikacja będzie dostępna pod adresem wskazanym w konsoli (np. `https://localh
 
 ---
 
-## 🔑 Dane logowania (konto administratora)
+## Dane logowania (konto administratora)
 
 Tworzone automatycznie przy pierwszym uruchomieniu:
 
@@ -105,7 +105,7 @@ Panel administracyjny dostępny jest pod adresem **`/Admin`** po zalogowaniu na 
 
 ---
 
-## 📦 Dane startowe (seed)
+## Dane startowe (seed)
 
 Przy pierwszym uruchomieniu aplikacja automatycznie:
 1. Tworzy role `Admin` i `User`.
@@ -116,7 +116,7 @@ Przy pierwszym uruchomieniu aplikacja automatycznie:
 
 ---
 
-## 🔒 Bezpieczeństwo
+## Bezpieczeństwo
 - Atrybuty `[Authorize]` na akcjach wymagających logowania oraz `[Authorize(Roles = "Admin")]` na całym obszarze Admin.
 - Token anti-forgery w każdym formularzu POST.
 - Sanityzacja i walidacja plików przy uploadzie plakatów (dozwolone rozszerzenia, limit rozmiaru, nazwa generowana po stronie serwera).
