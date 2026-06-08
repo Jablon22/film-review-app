@@ -4,6 +4,9 @@ Aplikacja webowa do katalogowania, oceniania i recenzowania filmów, zbudowana w
 Umożliwia przeglądanie katalogu filmów, dodawanie recenzji, prowadzenie własnej watchlisty oraz
 import filmów z bazy **TMDB**. Posiada rozbudowany panel administracyjny z moderacją treści.
 
+> 📘 **Dokumentacja techniczna** (architektura, struktura bazy danych z diagramem ERD,
+> przepływy najważniejszych funkcjonalności): zobacz [DOCUMENTATION.md](DOCUMENTATION.md).
+
 ---
 
 ## Funkcje
